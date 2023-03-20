@@ -30,7 +30,3 @@ ORDER BY amount asc;
 SELECT item,cost FROM camping_gear 
 WHERE cost <= 100
 ORDER BY cost asc;
-
-
-
-
