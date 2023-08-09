@@ -1,0 +1,102 @@
+--For this project, I have analyzed data within a database that includes 11 tables. 
+--I have explored relationships within and between tables in order to identify interesting insights. 
+
+#1--Find the song, album, and artist of tracks included in the 'Heavy Metal Class' playlist, and order the results by artist, alphabetically. 
+
+SELECT p.name AS playlist,
+t.name AS song,
+a.Title AS album,
+ar.name AS artist
+FROM chinook.playlists p
+JOIN chinook.playlist_track pt
+ON p.PlaylistId=pt.PlaylistId
+JOIN tracks t
+ON pt.TrackId=t.TrackId
+JOIN chinook.albums a
+ON t.albumid=a.albumid
+JOIN chinook.artists ar
+ON a.artistid=ar.artistid
+WHERE playlist='Heavy Metal Classic'
+Order by artist;
+
+#2--How many tracks are on the 'Heavy Metal Classic' playlist?
+
+SELECT COUNT(t.name)
+FROM chinook.playlists p
+JOIN chinook.playlist_track pt
+ON p.PlaylistId=pt.PlaylistId
+JOIN tracks t
+ON pt.TrackId=t.TrackId
+JOIN chinook.albums a
+ON t.albumid=a.albumid
+JOIN chinook.artists ar
+ON a.artistid=ar.artistid
+WHERE p.name='Heavy Metal Classic';
+
+#3--Show Customers (their full names, customer ID, and country) who are not in the US. 
+
+SELECT c.firstname, 
+c.lastname,
+c.customerId,
+c.country
+FROM chinook.customers c
+WHERE country !='USA';
+
+#4--How many Invoices were there in 2009?
+
+SELECT COUNT(*)
+FROM chinook.Invoices
+WHERE InvoiceDate BETWEEN '2009-01-01' AND '2009-12-31';
+
+#5--What are the total sales for 2009?
+
+SELECT SUM(total)
+FROM chinook.invoices
+WHERE invoicedate BETWEEN '2009-01-01' AND '2009-12-31';
+
+#6--Show the total sales made by each sales agent.
+
+SELECT e.lastname,e.firstname,ROUND(SUM(i.total),2) AS total_sales
+FROM chinook.employees e
+JOIN chinook.customers c
+ON e.employeeid=c.supportrepid
+JOIN chinook.invoices i
+ON C.Customerid=i.customerid
+GROUP BY e.firstname
+
+#7--What is the sales total for each country? Group results by country and show which countries have the highest total sales first.
+
+SELECT billingcountry, 
+       ROUND(SUM(total), 2) AS total_sales
+FROM chinook.invoices
+GROUP BY billingcountry
+ORDER by total_sales DESC;
+
+#8--Write a query that includes the purchased track name with each invoice line ID.
+
+SELECT t.name, i.invoicelineid
+FROM chinook.tracks t
+JOIN chinook.invoice_items i
+ON t.trackid=i.trackid;
+
+#9--Provide a query that shows all the Tracks. Include the Album name, Media type, and Genre.
+
+SELECT t.name AS track, 
+       a.title AS album, 
+       g.name AS genre, 
+       media.name AS Media_Type
+FROM chinook.tracks t
+JOIN chinook.albums a
+ON a.albumid = t.albumid
+JOIN chinook.genres g
+ON g.genreid = t.genreid
+JOIN chinook.media_types media
+ON media.mediatypeid = t.mediatypeid
+
+#10--Identify the number of customers in each country, and order results from most to least.  
+
+SELECT COUNT (CustomerID) AS Customer_Count, Country
+FROM chinook.customers
+GROUP BY  country
+ORDER BY customer_count desc
+     
